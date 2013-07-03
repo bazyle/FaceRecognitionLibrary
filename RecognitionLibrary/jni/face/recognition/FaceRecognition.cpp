@@ -127,9 +127,11 @@ bool FaceRecognition::predictFace(string& originalImageName,
 	return recognized;
 }
 
-void FaceRecognition::createModel(string& modelPath,
+bool FaceRecognition::createModel(string& modelPath,
 		vector<string> sourceImages, vector<int> labelIDs) {
-	LOGD("INPUT DATA SIZES: images=%d, labels=%d", sourceImages.size(), labelIDs.size());
+	LOGD("INPUT DATA SIZES: images=%d, labels=%d", sourceImages.size(),
+			labelIDs.size());
+	bool result = false;
 
 	if (recognizer != NULL && sourceImages.size() == labelIDs.size()) {
 		vector<Mat> images;
@@ -150,8 +152,10 @@ void FaceRecognition::createModel(string& modelPath,
 		if (images.size() >= 2) {
 			recognizer->train(images, labelIDs);
 			recognizer->save(modelPath);
+			result = true;
 		}
 	}
+	return result;
 }
 
 void FaceRecognition::updateModel(string& modelPath,
@@ -166,7 +170,6 @@ void FaceRecognition::updateModel(string& modelPath,
 			images.push_back(imread(imagePath, CV_LOAD_IMAGE_GRAYSCALE));
 			//labels.push_back(labelIDs);
 		}
-
 
 		if (images.size() > 2) {
 			recognizer->update(images, labelIDs);

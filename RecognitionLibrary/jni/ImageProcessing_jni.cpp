@@ -21,7 +21,7 @@ using namespace std;
 using namespace cv;
 
 //FaceDetectionProxy bindings
-JNIEXPORT void JNICALL Java_com_endava_recognitionlibrary_FaceProcessingProxy_processImageAndDetectFaces(
+JNIEXPORT void JNICALL Java_com_endava_recognitionlibrary_proxy_FaceProcessingProxy_processImageAndDetectFaces(
 		JNIEnv * jenv, jclass, jstring imageFilePath, jstring cascadeFilePath,
 		jlong facesAddr, jint faceSize) {
 
@@ -47,7 +47,7 @@ JNIEXPORT void JNICALL Java_com_endava_recognitionlibrary_FaceProcessingProxy_pr
 	}
 }
 
-JNIEXPORT bool JNICALL Java_com_endava_recognitionlibrary_FaceProcessingProxy_nativeCropFace(
+JNIEXPORT bool JNICALL Java_com_endava_recognitionlibrary_proxy_FaceProcessingProxy_nativeCropFace(
 		JNIEnv * jenv, jclass, jstring originalImagePath, jstring croppedPath,
 		jint imgX, jint imgY, jint faceWidth, jint faceHeight) {
 	bool result = false;
@@ -74,8 +74,29 @@ JNIEXPORT bool JNICALL Java_com_endava_recognitionlibrary_FaceProcessingProxy_na
 	return result;
 }
 
+JNIEXPORT bool JNICALL Java_com_endava_recognitionlibrary_proxy_FaceProcessingProxy_rotateImage(
+		JNIEnv * jenv, jclass, jstring originalImgPath,
+		jdouble rotationDegree) {
+	bool result = false;
+	try {
+		const char* jpathstr = jenv->GetStringUTFChars(originalImgPath, NULL);
+		string stdFinalPath(jpathstr);
+
+		Mat loadedImg = imread(stdFinalPath);
+		Mat rotatedImg = Mat::zeros(loadedImg.rows, loadedImg.cols,
+				loadedImg.type());
+		rotate(loadedImg, 360 - rotationDegree, rotatedImg);
+		result = saveImage(rotatedImg, stdFinalPath);
+	} catch (cv::Exception& e) {
+		LOGD("rotateImage caught cv::Exception: %s", e.what());
+	} catch (...) {
+		LOGD("rotateImage caught unknown exception");
+	}
+	return result;
+}
+
 //FaceRecognitionProxy bindings
-JNIEXPORT jlong JNICALL Java_com_endava_recognitionlibrary_FaceRecognitionProxy_createRecognizer(
+JNIEXPORT jlong JNICALL Java_com_endava_recognitionlibrary_proxy_FaceRecognitionProxy_createRecognizer(
 		JNIEnv * jenv, jclass, jstring modelName, int recognitionModelOrdinal) {
 	long result = 0;
 	try {
@@ -91,7 +112,7 @@ JNIEXPORT jlong JNICALL Java_com_endava_recognitionlibrary_FaceRecognitionProxy_
 
 	return result;
 }
-JNIEXPORT jlong JNICALL Java_com_endava_recognitionlibrary_FaceRecognitionProxy_createRecognizerWithCascade(
+JNIEXPORT jlong JNICALL Java_com_endava_recognitionlibrary_proxy_FaceRecognitionProxy_createRecognizerWithCascade(
 		JNIEnv * jenv, jclass, jstring modelName, jstring cascadeFilePath,
 		jint recognitionModelOrdinal) {
 	long result = 0;
@@ -112,7 +133,7 @@ JNIEXPORT jlong JNICALL Java_com_endava_recognitionlibrary_FaceRecognitionProxy_
 	return result;
 }
 
-JNIEXPORT void JNICALL Java_com_endava_recognitionlibrary_FaceRecognitionProxy_releaseRecognizer(
+JNIEXPORT void JNICALL Java_com_endava_recognitionlibrary_proxy_FaceRecognitionProxy_releaseRecognizer(
 		JNIEnv * jenv, jclass, jlong thiz) {
 	try {
 		if (thiz != 0) {
@@ -125,7 +146,7 @@ JNIEXPORT void JNICALL Java_com_endava_recognitionlibrary_FaceRecognitionProxy_r
 	}
 }
 
-JNIEXPORT jboolean JNICALL Java_com_endava_recognitionlibrary_FaceRecognitionProxy_predictFace(
+JNIEXPORT jboolean JNICALL Java_com_endava_recognitionlibrary_proxy_FaceRecognitionProxy_predictFace(
 		JNIEnv * jenv, jclass, jlong thiz, jstring imagePath,
 		jstring processedImgPath, jint contactID, jdouble rotationDegree) {
 	bool result = false;
@@ -148,9 +169,10 @@ JNIEXPORT jboolean JNICALL Java_com_endava_recognitionlibrary_FaceRecognitionPro
 	return result;
 }
 
-JNIEXPORT void JNICALL Java_com_endava_recognitionlibrary_FaceRecognitionProxy_createModel(
+JNIEXPORT jboolean JNICALL Java_com_endava_recognitionlibrary_proxy_FaceRecognitionProxy_createModel(
 		JNIEnv * jenv, jclass, jlong thiz, jstring modelName,
 		jobjectArray sourceImagesArr, jintArray labelIDs) {
+	bool result = false;
 	if (thiz != 0) {
 		try {
 			vector<string> images = vector<string>();
@@ -175,7 +197,7 @@ JNIEXPORT void JNICALL Java_com_endava_recognitionlibrary_FaceRecognitionProxy_c
 				labels.push_back(ints[i]);
 			}
 
-			((FaceRecognition*) thiz)->createModel(stdModelName, images,
+			result = ((FaceRecognition*) thiz)->createModel(stdModelName, images,
 					labels);
 		} catch (cv::Exception& e) {
 			LOGD("createModel caught cv::Exception: %s", e.what());
@@ -183,9 +205,10 @@ JNIEXPORT void JNICALL Java_com_endava_recognitionlibrary_FaceRecognitionProxy_c
 			LOGD("createModel caught unknown exception");
 		}
 	}
+	return result;
 }
 
-JNIEXPORT void JNICALL Java_com_endava_recognitionlibrary_FaceRecognitionProxy_updateModel(
+JNIEXPORT void JNICALL Java_com_endava_recognitionlibrary_proxy_FaceRecognitionProxy_updateModel(
 		JNIEnv * jenv, jclass, jlong thiz, jstring modelName,
 		jobjectArray sourceImagesArr, jintArray labelIDs) {
 	if (thiz != 0) {

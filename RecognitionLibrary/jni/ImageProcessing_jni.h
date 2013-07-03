@@ -10,29 +10,32 @@ extern "C" {
 #endif
 
 //FaceDetectionProxy bindings
-JNIEXPORT void JNICALL Java_com_endava_recognitionlibrary_FaceProcessingProxy_processImageAndDetectFaces(
+JNIEXPORT void JNICALL Java_com_endava_recognitionlibrary_proxy_FaceProcessingProxy_processImageAndDetectFaces(
 		JNIEnv * jenv, jclass, jstring, jstring, jlong, jint);
 
-JNIEXPORT bool JNICALL Java_com_endava_recognitionlibrary_FaceProcessingProxy_nativeCropFace(
+JNIEXPORT bool JNICALL Java_com_endava_recognitionlibrary_proxy_FaceProcessingProxy_nativeCropFace(
 		JNIEnv *, jclass, jstring, jstring, jint, jint, jint, jint);
 
+JNIEXPORT bool JNICALL Java_com_endava_recognitionlibrary_proxy_FaceProcessingProxy_rotateImage(
+		JNIEnv *, jclass, jstring, jdouble);
+
 //FaceRecognitionProxy bindings
-JNIEXPORT jlong JNICALL Java_com_endava_recognitionlibrary_FaceRecognitionProxy_createRecognizer(
+JNIEXPORT jlong JNICALL Java_com_endava_recognitionlibrary_proxy_FaceRecognitionProxy_createRecognizer(
 		JNIEnv *, jclass, jstring, jint recognitionModelOrdinal);
 
-JNIEXPORT jlong JNICALL Java_com_endava_recognitionlibrary_FaceRecognitionProxy_createRecognizerWithCascade(
+JNIEXPORT jlong JNICALL Java_com_endava_recognitionlibrary_proxy_FaceRecognitionProxy_createRecognizerWithCascade(
 		JNIEnv *, jclass, jstring, jstring, jint recognitionModelOrdinal);
 
-JNIEXPORT void JNICALL Java_com_endava_recognitionlibrary_FaceRecognitionProxy_releaseRecognizer(
+JNIEXPORT void JNICALL Java_com_endava_recognitionlibrary_proxy_FaceRecognitionProxy_releaseRecognizer(
 		JNIEnv *, jclass, jlong);
 
-JNIEXPORT void JNICALL Java_com_endava_recognitionlibrary_FaceRecognitionProxy_createModel(
+JNIEXPORT jboolean JNICALL Java_com_endava_recognitionlibrary_proxy_FaceRecognitionProxy_createModel(
 		JNIEnv *, jclass, jlong, jstring, jobjectArray, jintArray);
 
-JNIEXPORT jboolean JNICALL Java_com_endava_recognitionlibrary_FaceRecognitionProxy_predictFace(
+JNIEXPORT jboolean JNICALL Java_com_endava_recognitionlibrary_proxy_FaceRecognitionProxy_predictFace(
 		JNIEnv *, jclass, jlong, jstring, jstring, jint, jdouble);
 
-JNIEXPORT void JNICALL Java_com_endava_recognitionlibrary_FaceRecognitionProxy_updateModel(
+JNIEXPORT void JNICALL Java_com_endava_recognitionlibrary_proxy_FaceRecognitionProxy_updateModel(
 		JNIEnv *, jclass, jlong, jstring, jobjectArray, jintArray);
 
 #ifdef __cplusplus

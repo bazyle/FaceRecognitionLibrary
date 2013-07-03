@@ -2,4 +2,8 @@
 
     <string name="app_name">Recognition Library</string>
 
+    <string name="service_description">Scans for new photos in media library and tags recognized contacts using the trained models.</string>
+
+    <string name="recognition_service_label">RecognitionService</string>
+
 </resources>

@@ -26,7 +26,7 @@ public:
 
 	 bool predictFace(string&, string&, int, double);
 
-	 void createModel(string& modelName, vector<string> sourceImages, vector<int> labelIDs);
+	 bool createModel(string& modelName, vector<string> sourceImages, vector<int> labelIDs);
 	 void updateModel(string& modelName, vector<string> sourceImages, vector<int> labelIDs);
 
 

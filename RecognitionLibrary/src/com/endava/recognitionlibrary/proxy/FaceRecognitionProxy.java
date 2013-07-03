@@ -1,11 +1,14 @@
 /**
  * 
  */
-package com.endava.recognitionlibrary;
+package com.endava.recognitionlibrary.proxy;
 
 import org.opencv.contrib.FaceRecognizer;
 
+import com.endava.recognitionlibrary.Utils;
+
 import android.content.Context;
+
 
 /**
  * Proxy for JNI face recognition calls to native code.
@@ -37,8 +40,8 @@ public class FaceRecognitionProxy {
 		}
 	}
 
-	public void createModel(String modelPath, String[] sourceImages, int[] labelIDs) {
-		createModel(mNativeObj, modelPath, sourceImages, labelIDs);
+	public boolean createModel(String modelPath, String[] sourceImages, int[] labelIDs) {
+		return createModel(mNativeObj, modelPath, sourceImages, labelIDs);
 	}
 
 	public void updateModel(String modelPath, String[] sourceImages, int[] labelIDs) {
@@ -60,7 +63,7 @@ public class FaceRecognitionProxy {
 
 	private static native boolean predictFace(long nativeObj, String imagePath, String processedImgPath, int contactID, double degree);
 
-	private static native void createModel(long nativeObj, String modelPath, Object[] sourceImages, int[] labelIDs);
+	private static native boolean createModel(long nativeObj, String modelPath, Object[] sourceImages, int[] labelIDs);
 
 	private static native void updateModel(long nativeObj, String modelPath, Object[] sourceImages, int[] labelIDs);
 

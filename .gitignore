@@ -19,3 +19,5 @@ local.properties
 #.classpath
 #.project
 .metadata/
+RecognitionLibrary/obj/
+RecognitionLibrary/libs/armeabi-v7a/
