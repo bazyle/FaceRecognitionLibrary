@@ -83,9 +83,17 @@ JNIEXPORT bool JNICALL Java_com_endava_recognitionlibrary_proxy_FaceProcessingPr
 		string stdFinalPath(jpathstr);
 
 		Mat loadedImg = imread(stdFinalPath);
+		double degreeToRotate = 360 - rotationDegree;
+		Mat rotatedImg;
+		if(degreeToRotate == 90 || degreeToRotate == 270){
+			Mat rotatedImg = Mat::zeros(loadedImg.cols, loadedImg.rows,
+					loadedImg.type());
+		}
+		else{
 		Mat rotatedImg = Mat::zeros(loadedImg.rows, loadedImg.cols,
 				loadedImg.type());
-		rotate(loadedImg, 360 - rotationDegree, rotatedImg);
+		}
+		rotate(loadedImg, degreeToRotate, rotatedImg);
 		result = saveImage(rotatedImg, stdFinalPath);
 	} catch (cv::Exception& e) {
 		LOGD("rotateImage caught cv::Exception: %s", e.what());
